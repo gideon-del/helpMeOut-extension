@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@500&family=Work+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link href="./dist/output.css" rel="stylesheet" />
+    <meta
+      http-equiv="Content-Security-policy"
+      content="script-src 'self' https://cdn.tailwindcss.com"
+    />
+
+    <script defer src="popup.js"></script>
+    <style>
+      body {
+        font-family: "Work Sans", sans-serif;
+      }
+      .container {
+        box-shadow: 0px 4px 20px 0px rgba(0, 0, 0, 0.1);
+      }
+    </style>
+  </head>
+  <body>
+    <section
+      class="w-[300px] rounded-[24px] px-6 pt-6 pb-8 mx-auto mt-2 text-sm container flex flex-col gap-8"
+    >
+      <section class="flex flex-col gap-4">
+        <figure class="flex justify-between items-center">
+          <div>
+            <img src="./images/logo.svg" alt="Logo" width="132" height="28" />
+          </div>
+          <div class="flex items-center gap-3">
+            <img src="./images/setting.svg" alt="Settings" />
+            <img src="./images/close-circle.svg" alt="Close" />
+          </div>
+        </figure>
+        <p class="text-[#413C6D] font-normal max-w-[225px]">
+          This extension helps you record and share help videos with ease.
+        </p>
+      </section>
+      <section class="flex flex-col gap-6">
+        <figure class="flex px-8 justify-between">
+          <div class="flex flex-col items-center gap-2 cursor-pointer">
+            <img src="./images/monitor.svg" />
+            <span class="text-[#928FAB] font-medium">Full screen</span>
+          </div>
+          <div class="flex flex-col items-center gap-2 cursor-pointer">
+            <img src="./images/copy.svg" />
+            <span class="text-[#120B48] font-semibold">Current Tab</span>
+          </div>
+        </figure>
+        <div
+          class="border border-[#100A42] text-[#100A42] rounded-xl pl-4 py-3 pr-3 flex justify-between items-center"
+        >
+          <div class="flex items-center gap-2 font-medium">
+            <img src="./images/video-camera.svg" />
+            <span>Camera</span>
+          </div>
+          <div class="toggle" data-allow="false" id="camera"></div>
+        </div>
+        <div
+          class="border border-[#100A42] text-[#100A42] rounded-xl pl-4 py-3 pr-3 flex justify-between items-center"
+        >
+          <div class="flex items-center gap-2 font-medium">
+            <img src="./images/microphone.svg" />
+            <span>Audio</span>
+          </div>
+          <div class="toggle" data-allow="false" id="microphone"></div>
+        </div>
+        <button
+          class="text-center flex place-content-center font-medium text-base text-white bg-[#120B48] p-4 rounded-xl"
+        >
+          Start Recording
+        </button>
+      </section>
+    </section>
+    <section class="fixed py-5 px-10 bottom-0 left-0">
+      <div class="rounded-full p-2 bg-grayTransParent">
+        <div
+          class="bg-[#141414] py-3 pl-4 pr-10 rounded-full flex items-center gap-6"
+        >
+          <div
+            class="font-inter font-medium text-white text-xl flex items-center gap-2 p-4 border-r border-r-[#E8E8E8]"
+          >
+            <span>00:03:45</span>
+            <div class="bg-red/[19%] p-[6px] rounded-full">
+              <span class="bg-red w-[10px] h-[10px] rounded-full block"></span>
+            </div>
+          </div>
+          <div class="flex items-center gap-6">
+            <div class="flex flex-col items-center gap-1 cursor-pointer">
+              <div
+                class="p-[10px] rounded-full bg-white brorder border-black flex place-content-center place-items-center w-9 h-9"
+              >
+                <img src="./images/pause.svg" />
+              </div>
+              <span class="text-white font-medium text-xs">Pause</span>
+            </div>
+            <div class="flex flex-col items-center gap-1 cursor-pointer">
+              <div
+                class="p-[10px] rounded-full bg-white flex brorder border-black place-content-center place-items-center w-9 h-9"
+              >
+                <img src="./images/stop.svg" />
+              </div>
+              <span class="text-white font-medium text-xs">Stop</span>
+            </div>
+            <div class="flex flex-col items-center gap-1 cursor-pointer">
+              <div
+                class="p-[10px] rounded-full brorder border-black bg-white flex place-content-center place-items-center relative w-9 h-9"
+              >
+                <img src="./images/video-slash.svg" />
+                <div
+                  class="absolute p-[2px] bg-white -bottom-[2px] -right-[2px] rounded-sm"
+                  style="box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25)"
+                >
+                  <img src="./images/arrow-up.svg" />
+                </div>
+              </div>
+              <span class="text-white font-medium text-xs">Camera</span>
+            </div>
+            <div class="flex flex-col items-center gap-1 cursor-pointer">
+              <div
+                class="p-[10px] rounded-full brorder border-black bg-white flex place-content-center place-items-center relative w-9 h-9"
+              >
+                <img src="./images/microphone.svg" />
+                <div
+                  class="absolute p-[2px] bg-white -bottom-[2px] -right-[2px] rounded-sm"
+                  style="box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25)"
+                >
+                  <img src="./images/arrow-up.svg" />
+                </div>
+              </div>
+              <span class="text-white font-medium text-xs">Mic</span>
+            </div>
+            <div
+              class="p-[10px] rounded-full brorder border-black bg-[#4B4B4B] flex place-content-center place-items-center relative w-9 h-9 self-start cursor-pointer"
+            >
+              <img src="./images/trash.svg" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>
