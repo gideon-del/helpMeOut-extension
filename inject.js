@@ -1,6 +1,7 @@
-(() => {
-  const injectNav = () => {
-    const style = ` 
+let recorder;
+let data = [];
+const injectNav = () => {
+  const style = ` 
    <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -19,6 +20,7 @@
         padding: 20px 40px;
         bottom: 0;
         left: 0;
+        z-index:9999999999999999;
       }
       .nav_wrapper {
         border-radius: 999px;
@@ -100,7 +102,7 @@
         flex-direction: row;
       }
     </style>`;
-    const html = ` <section class="nav">
+  const html = ` <section class="nav" id="controlls_nav">
       <div class="nav_wrapper">
         <div class="nav_main">
           <div class="nav_timer">
@@ -109,9 +111,9 @@
               <span></span>
             </div>
           </div>
-          <div class="nav_actions_wrapper">
-            <div class="nav_actions">
-              <div class="nav_actions-img">
+          <div class="nav_actions_wrapper" >
+            <div class="nav_actions" >
+              <div class="nav_actions-img" id='pause' data-type='pause'>
                 <svg
                   width="10"
                   height="14"
@@ -135,7 +137,7 @@
               </div>
               <span>Pause</span>
             </div>
-            <div class="nav_actions">
+            <div class="nav_actions" id='stop'>
               <div class="nav_actions-img">
                 <svg
                   width="24"
@@ -300,10 +302,48 @@
         </div>
       </div>
     </section>`;
-    document.head.insertAdjacentHTML("beforeend", style);
-    document.body.insertAdjacentHTML("beforeend", html);
-  };
-  chrome.runtime.onMessage.addListener(function (mesaage, sender, sendRespons) {
-    console.log("response");
+  document.head.insertAdjacentHTML("beforeend", style);
+  document.body.insertAdjacentHTML("beforeend", html);
+};
+
+const startRecorder = async () => {
+  let streamId = await navigator.mediaDevices?.getDisplayMedia({
+    audio: true,
+    video: true,
   });
-})();
+  recorder = new MediaRecorder(streamId, {
+    mimeType: "video/webm;codecs=vp9",
+  });
+  recorder.addEventListener("dataavailable", (e) => {
+    data.push(e.data);
+  });
+  recorder.addEventListener("stop", (e) => {
+    console.log(data);
+    const blob = new Blob(data, { type: "video/webm" });
+    // window.open(URL.createObjectURL(blob), "_blank");
+    console.log(blob);
+    recorder = undefined;
+
+    data = [];
+  });
+  recorder.start();
+  injectNav();
+  let element = document.getElementById("controlls_nav");
+  const stopBtn = element.querySelector("#stop");
+  let pauseBtn = element.querySelector("#pause");
+  stopBtn.addEventListener("click", async () => {
+    recorder?.stop();
+    const elementTORemove = document.getElementById("controlls_nav");
+    document.body.removeChild(elementTORemove);
+  });
+  pauseBtn.addEventListener("click", (e) => {
+    if (e.target.dataset.type === "pause") {
+      recorder?.pause();
+      e.target.setAttribute("data-type", "play");
+    } else {
+      recorder?.resume();
+      e.target.setAttribute("data-type", "pause");
+    }
+  });
+};
+startRecorder();

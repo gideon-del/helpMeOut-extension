@@ -10,5 +10,21 @@
   "background": {
     "service_worker": "background.js"
   },
-  "permissions": ["activeTab", "scripting"]
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "nativeMessaging",
+    "tabs",
+    "offscreen",
+    "tabCapture",
+    "desktopCapture"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "css": ["dist/output.css"],
+      "js": ["content.js"],
+      "all_frames": true
+    }
+  ]
 }
