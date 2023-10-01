@@ -56,7 +56,9 @@ startBtn.onclick = async (e) => {
     cameraIsAllowed,
     microphoneIsAllowed,
   });
-  // chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+  // let currentTab;
+  // await chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+  //   currentTab = tabs[0];
   //   const tab = tabs[0];
   //   const tabId = tab.id;
   //   chrome.desktopCapture.chooseDesktopMedia(
@@ -64,10 +66,15 @@ startBtn.onclick = async (e) => {
   //     tab,
   //     (streamId) => {
   //       console.log(streamId);
-  //       chrome.scripting.executeScript({
-  //         target: { tabId },
-  //         file: ["content.js"],
-  //       });
+  //       chrome.scripting.executeScript(
+  //         {
+  //           target: { tabId },
+  //           file: ["content.js"],
+  //         },
+  //         () => {
+  //           chrome.tabs.sendMessage(tabId, "Hello");
+  //         }
+  //       );
   //     }
   //   );
   // });

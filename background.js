@@ -11,7 +11,7 @@ const injectFunc = ({ tab, isTab, allowCamera, mediaId }) => {
   let data = [];
   console.log("injected");
   const injectNav = () => {
-    const style = ` 
+    const style = `
    <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -85,7 +85,7 @@ const injectFunc = ({ tab, isTab, allowCamera, mediaId }) => {
         font-size: 12px;
       }
       .nav_actions-img {
-       
+
         border-radius: 999px;
         background-color: #fff;
         display: flex;
@@ -144,7 +144,7 @@ const injectFunc = ({ tab, isTab, allowCamera, mediaId }) => {
               <span>Stop</span>
             </div>
             <div class="nav_actions">
-              <div class="nav_actions-img">
+              <div class="nav_actions-img" id='cameraEl'>
                 <svg
                   width="24"
                   height="24"
@@ -216,7 +216,7 @@ const injectFunc = ({ tab, isTab, allowCamera, mediaId }) => {
               <span>Camera</span>
             </div>
             <div class="nav_actions">
-              <div class="nav_actions-img">
+              <div class="nav_actions-img" id="micEl">
                 <svg
                   width="24"
                   height="24"
@@ -334,12 +334,11 @@ const injectFunc = ({ tab, isTab, allowCamera, mediaId }) => {
       ...videoId.getTracks(),
     ]);
     myrecorder = new MediaRecorder(streamId);
-    myrecorder.addEventListener("dataavailable", (e) => {
+    myrecorder.addEventListener("dataavailable", async (e) => {
       data.push(e.data);
     });
 
     myrecorder.addEventListener("stop", (e) => {
-      console.log(data);
       const blob = new Blob(data, {
         type: "video/x-matroska;codecs=avc1,opus",
       });
@@ -362,16 +361,20 @@ const injectFunc = ({ tab, isTab, allowCamera, mediaId }) => {
     myrecorder.addEventListener("start", (e) => {
       timeout = setInterval(() => {}, 1000);
     });
-    myrecorder.start();
+    myrecorder.start(10000);
     injectNav();
+    // Select all controlls
     let element = document.getElementById("controlls_nav");
     const stopBtn = element.querySelector("#stop");
     let pauseBtn = element.querySelector("#pause");
     let pauseText = element.querySelector("#pause-text");
+    let cammeraEl = element.querySelector("#cameraEL");
     stopBtn.addEventListener("click", async () => {
       myrecorder?.stop();
     });
 
+    let micEl = element.querySelector("#micEl");
+    // Toggling  pause
     pauseBtn.addEventListener("click", (e) => {
       if (e.target.dataset.type === "pause") {
         myrecorder?.pause();
@@ -381,6 +384,42 @@ const injectFunc = ({ tab, isTab, allowCamera, mediaId }) => {
         myrecorder?.resume();
         e.target.setAttribute("data-type", "pause");
         pauseText.textContent = "Pause";
+      }
+    });
+    // Toggling mic
+    micEl.addEventListener("click", () => {
+      const audio = audioId.getAudioTracks()[0];
+      if (audio.enabled) {
+        audio.enabled = false;
+        micEl.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+<path d="M16 6.3V6C16 3.79 14.21 2 12 2C9.79 2 8 3.79 8 6V11" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M9.04004 14.19C9.77004 15 10.83 15.5 12 15.5C14.21 15.5 16 13.71 16 11.5V11" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M6.77979 16.95C8.14979 18.22 9.97978 19 11.9998 19C16.2198 19 19.6498 15.57 19.6498 11.35V9.64999" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M4.3501 9.64999V11.35C4.3501 12.41 4.5601 13.41 4.9501 14.33" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M20.0702 2.84L3.93018 18.99" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M11 3V6" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M12 19V22" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>`;
+      } else {
+        audio.enabled = true;
+        micEl.innerHTML = ` <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <g id="heroicons-outline/microphone">
+                    <path
+                      id="Vector"
+                      d="M12 18.75C15.3137 18.75 18 16.0637 18 12.75V11.25M12 18.75C8.68629 18.75 6 16.0637 6 12.75V11.25M12 18.75V22.5M8.25 22.5H15.75M12 15.75C10.3431 15.75 9 14.4069 9 12.75V4.5C9 2.84315 10.3431 1.5 12 1.5C13.6569 1.5 15 2.84315 15 4.5V12.75C15 14.4069 13.6569 15.75 12 15.75Z"
+                      stroke="#0F172A"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </g>
+                </svg>`;
       }
     });
   };
@@ -414,3 +453,14 @@ chrome.runtime.onMessage.addListener(async (mesaage, sender, sendRespons) => {
     }
   }
 });
+// chrome.runtime.onInstalled.addListener(async () => {
+//   for (const cs of chrome.runtime.getManifest().content_scripts) {
+//     for (const tab of await chrome.tabs.query({ url: cs.matches })) {
+//       console.log(cs);
+//       chrome.scripting.executeScript({
+//         target: { tabId: tab.id },
+//         files: cs.js,
+//       });
+//     }
+//   }
+// });

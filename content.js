@@ -307,7 +307,6 @@
 //     console.log("response");
 //   });
 // })();
-console.log("injected");
 chrome.runtime.onMessage.addListener(async (streamId) => {
   console.log("stream id", streamId);
 });

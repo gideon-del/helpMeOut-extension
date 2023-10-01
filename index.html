@@ -24,6 +24,107 @@
       .container {
         box-shadow: 0px 4px 20px 0px rgba(0, 0, 0, 0.1);
       }
+      .nav {
+        position: fixed;
+        padding: 20px 40px;
+        bottom: 0;
+        left: 0;
+        z-index: 9999999999999999;
+        display: flex;
+        gap: 40px;
+        align-items: center;
+      }
+      .nav_wrapper {
+        border-radius: 999px;
+        padding: 8px;
+        background-color: rgba(98, 98, 98, 0.17);
+      }
+      .nav_main {
+        background-color: #141414;
+        padding: 12px 16px;
+        padding-right: 20px;
+        border-radius: 999px;
+        display: flex;
+        align-items: center;
+        gap: 24px;
+      }
+      .nav_timer {
+        font-family: "Inter" sans-serif;
+        font-weight: 500;
+        font-size: 20px;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 16px;
+        border-right: 1px solid #e8e8e8;
+      }
+      .nav_red-dot {
+        background-color: rgba(192, 4, 4, 19%);
+        border-radius: 999px;
+        padding: 6px;
+      }
+      .nav_red-dot > span {
+        background-color: rgb(192, 4, 4);
+        width: 10px;
+        height: 10px;
+        display: block;
+        border-radius: 999px;
+      }
+      .nav_actions_wrapper {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+      }
+      .nav_actions {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        cursor: pointer;
+        font-weight: 500;
+        color: #fff;
+        font-size: 12px;
+      }
+      .nav_actions-img {
+        border-radius: 999px;
+        background-color: #fff;
+        display: flex;
+        border: black solid 1px;
+        place-content: center;
+        place-items: center;
+        width: 36px;
+        height: 36px;
+        position: relative;
+      }
+      .nav-actions-img > svg {
+        width: 24px;
+        height: 24px;
+      }
+      .nav_arrow-up {
+        position: absolute;
+        padding: 2px;
+        background-color: #fff;
+        bottom: -2px;
+        right: -2px;
+        border-radius: 2px;
+        box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+      }
+      .nav_delete {
+        background-color: #4b4b4b;
+        align-self: flex-start;
+        gap: 0;
+        flex-direction: row;
+      }
+      .camera {
+        width: 156px;
+        height: 156px;
+        background-color: #141414;
+        border-radius: 999px;
+      }
+      .camera.hide {
+        display: none;
+      }
     </style>
   </head>
   <body>
@@ -154,6 +255,9 @@
       </section>
     </section>
     <!-- <section class="nav">
+      <div class="camera">
+        <video width="100%" height="100%"></video>
+      </div>
       <div class="nav_wrapper">
         <div class="nav_main">
           <div class="nav_timer">
