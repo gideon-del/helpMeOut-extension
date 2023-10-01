@@ -618,14 +618,8 @@ video {
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
-  font-weight: 500;
   --tw-text-opacity: 1;
   color: rgb(146 143 171 / var(--tw-text-opacity));
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-backdrop-filter;
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-backdrop-filter;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
 }
 
 .display_btn:hover {
@@ -634,13 +628,8 @@ video {
 }
 
 .display_btn[data-selected="true"] {
-  font-weight: 600;
   --tw-text-opacity: 1;
   color: rgb(18 11 72 / var(--tw-text-opacity));
-}
-
-.display_btn > svg {
-  stroke: inherit;
 }
 
 .sr-only {
@@ -920,6 +909,10 @@ video {
 
 .transform-none {
   transform: none;
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }
 
 .touch-auto {
@@ -2064,6 +2057,10 @@ video {
   font-weight: 400;
 }
 
+.font-semibold {
+  font-weight: 600;
+}
+
 .uppercase {
   text-transform: uppercase;
 }
@@ -2135,6 +2132,11 @@ video {
 .text-\[\#100A42\] {
   --tw-text-opacity: 1;
   color: rgb(16 10 66 / var(--tw-text-opacity));
+}
+
+.text-\[\#120B48\] {
+  --tw-text-opacity: 1;
+  color: rgb(18 11 72 / var(--tw-text-opacity));
 }
 
 .text-\[\#336699\]\/\[\.35\] {

@@ -24,91 +24,6 @@
       .container {
         box-shadow: 0px 4px 20px 0px rgba(0, 0, 0, 0.1);
       }
-      .nav {
-        position: fixed;
-        padding: 20px 40px;
-        bottom: 0;
-        left: 0;
-      }
-      .nav_wrapper {
-        border-radius: 999px;
-        padding: 8px;
-        background-color: rgba(98, 98, 98, 0.17);
-      }
-      .nav_main {
-        background-color: #141414;
-        padding: 12px 16px;
-        padding-right: 20px;
-        border-radius: 999px;
-        display: flex;
-        align-items: center;
-        gap: 24px;
-      }
-      .nav_timer {
-        font-family: "Inter" sans-serif;
-        font-weight: 500;
-        font-size: 20px;
-        color: #fff;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 16px;
-        border-right: 1px solid #e8e8e8;
-      }
-      .nav_red-dot {
-        background-color: rgba(192, 4, 4, 19%);
-        border-radius: 999px;
-        padding: 6px;
-      }
-      .nav_red-dot > span {
-        background-color: rgb(192, 4, 4);
-        width: 10px;
-        height: 10px;
-        display: block;
-        border-radius: 999px;
-      }
-      .nav_actions_wrapper {
-        display: flex;
-        align-items: center;
-        gap: 24px;
-      }
-      .nav_actions {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 4px;
-        cursor: pointer;
-        font-weight: 500;
-        color: #fff;
-        font-size: 12px;
-      }
-      .nav_actions-img {
-        padding: 10px;
-        border-radius: 999px;
-        background-color: #fff;
-        display: flex;
-        border: black solid 1px;
-        place-content: center;
-        place-items: center;
-        width: 36px;
-        height: 36px;
-        position: relative;
-      }
-      .nav_arrow-up {
-        position: absolute;
-        padding: 2px;
-        background-color: #fff;
-        bottom: -2px;
-        right: -2px;
-        border-radius: 2px;
-        box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-      }
-      .nav_delete {
-        background-color: #4b4b4b;
-        align-self: flex-start;
-        gap: 0;
-        flex-direction: row;
-      }
     </style>
   </head>
   <body>
@@ -131,13 +46,85 @@
       </section>
       <section class="flex flex-col gap-6">
         <figure class="flex px-8 justify-between">
-          <div class="flex flex-col items-center gap-2 cursor-pointer">
-            <img src="./images/monitor.svg" />
-            <span class="text-[#928FAB] font-medium">Full screen</span>
+          <div class="display_btn" data-selected="false" id="monitorEl">
+            <svg
+              width="32"
+              height="32"
+              viewBox="0 0 32 32"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g id="vuesax/linear/monitor">
+                <g id="monitor">
+                  <path
+                    id="Vector"
+                    d="M8.5865 2.66675H23.3998C28.1465 2.66675 29.3332 3.85341 29.3332 8.58675V17.0267C29.3332 21.7734 28.1465 22.9467 23.4132 22.9467H8.5865C3.85317 22.9601 2.6665 21.7734 2.6665 17.0401V8.58675C2.6665 3.85341 3.85317 2.66675 8.5865 2.66675Z"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    id="Vector_2"
+                    d="M16 22.96V29.3333"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    id="Vector_3"
+                    d="M2.6665 17.3333H29.3332"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    id="Vector_4"
+                    d="M10 29.3333H22"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </g>
+              </g>
+            </svg>
+
+            <span>Full screen</span>
           </div>
-          <div class="flex flex-col items-center gap-2 cursor-pointer">
-            <img src="./images/copy.svg" />
-            <span class="text-[#120B48] font-semibold">Current Tab</span>
+          <div class="display_btn" data-selected="true" id="tab">
+            <svg
+              width="32"
+              height="32"
+              viewBox="0 0 32 32"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g id="vuesax/linear/copy">
+                <g id="copy">
+                  <path
+                    id="Vector"
+                    d="M21.3332 17.2001V22.8001C21.3332 27.4667 19.4665 29.3334 14.7998 29.3334H9.19984C4.53317 29.3334 2.6665 27.4667 2.6665 22.8001V17.2001C2.6665 12.5334 4.53317 10.6667 9.19984 10.6667H14.7998C19.4665 10.6667 21.3332 12.5334 21.3332 17.2001Z"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    id="Vector_2"
+                    d="M29.3332 9.20008V14.8001C29.3332 19.4667 27.4665 21.3334 22.7998 21.3334H21.3332V17.2001C21.3332 12.5334 19.4665 10.6667 14.7998 10.6667H10.6665V9.20008C10.6665 4.53341 12.5332 2.66675 17.1998 2.66675H22.7998C27.4665 2.66675 29.3332 4.53341 29.3332 9.20008Z"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </g>
+              </g>
+            </svg>
+
+            <span>Current Tab</span>
           </div>
         </figure>
         <div

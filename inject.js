@@ -1,4 +1,4 @@
-let recorder;
+let myrecorder;
 let data = [];
 const injectNav = () => {
   const style = ` 
@@ -278,22 +278,33 @@ const injectNav = () => {
   document.head.insertAdjacentHTML("beforeend", style);
   document.body.insertAdjacentHTML("beforeend", html);
 };
+let pause = ` <svg width="10" height="14" viewBox="0 0 10 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M1 1.5L1 12.5" stroke="black" stroke-width="2" stroke-linecap="round"/>
+<path d="M9 1.5L9 12.5" stroke="black" stroke-width="2" stroke-linecap="round"/>
+</svg>`;
+let play = ``;
+let seconds = 0;
+let min = 0;
+let hour = 0;
+let timeout;
 const removeNav = () => {
   const elementTORemove = document.getElementById("controlls_nav");
   document.body.removeChild(elementTORemove);
 };
+
 const startRecorder = async () => {
   let streamId = await navigator.mediaDevices?.getDisplayMedia({
     audio: true,
     video: true,
+    systemAudio: "include",
   });
-  recorder = new MediaRecorder(streamId, {
+  myrecorder = new MediaRecorder(streamId, {
     mimeType: "video/webm;codecs=vp9",
   });
-  recorder.addEventListener("dataavailable", (e) => {
+  myrecorder.addEventListener("dataavailable", (e) => {
     data.push(e.data);
   });
-  recorder.addEventListener("stop", (e) => {
+  myrecorder.addEventListener("stop", (e) => {
     console.log(data);
     const blob = new Blob(data, { type: "video/webm" });
     // window.open(URL.createObjectURL(blob), "_blank");
@@ -303,31 +314,35 @@ const startRecorder = async () => {
         track.stop();
       });
     }
-    recorder = undefined;
+    myrecorder = undefined;
 
     data = [];
     removeNav();
   });
   streamId.addEventListener("removetrack", () => {
-    recorder?.stop();
+    console.log("removing");
+    myrecorder?.stop();
   });
-  recorder.start();
+  myrecorder.addEventListener("start", (e) => {
+    timeout = setInterval(() => {}, 1000);
+  });
+  myrecorder.start(10000);
   injectNav();
   let element = document.getElementById("controlls_nav");
   const stopBtn = element.querySelector("#stop");
   let pauseBtn = element.querySelector("#pause");
   let pauseText = element.querySelector("#pause-text");
   stopBtn.addEventListener("click", async () => {
-    recorder?.stop();
+    myrecorder?.stop();
   });
 
   pauseBtn.addEventListener("click", (e) => {
     if (e.target.dataset.type === "pause") {
-      recorder?.pause();
+      myrecorder?.pause();
       e.target.setAttribute("data-type", "play");
       pauseText.textContent = "Play";
     } else {
-      recorder?.resume();
+      myrecorder?.resume();
       e.target.setAttribute("data-type", "pause");
       pauseText.textContent = "Pause";
     }

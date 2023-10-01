@@ -8,4 +8,13 @@
   .toggle[data-allow="false"] {
     @apply bg-[#928FAB] after:left-[2px] after:right-auto;
   }
+  .display_btn {
+    @apply flex flex-col items-center gap-2 transition cursor-pointer hover:text-[#120B48] text-[#928FAB] font-medium;
+  }
+  .display_btn[data-selected="true"] {
+    @apply text-[#120b48] font-semibold;
+  }
+  .display_btn > svg {
+    stroke: inherit;
+  }
 }
