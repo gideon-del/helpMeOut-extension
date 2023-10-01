@@ -75,7 +75,7 @@ const injectNav = () => {
         font-size: 12px;
       }
       .nav_actions-img {
-        padding: 10px;
+       
         border-radius: 999px;
         background-color: #fff;
         display: flex;
@@ -85,6 +85,10 @@ const injectNav = () => {
         width: 36px;
         height: 36px;
         position: relative;
+      }
+      .nav-actions-img > svg {
+        width:24px;
+        height:24px;
       }
       .nav_arrow-up {
         position: absolute;
@@ -114,49 +118,18 @@ const injectNav = () => {
           <div class="nav_actions_wrapper" >
             <div class="nav_actions" >
               <div class="nav_actions-img" id='pause' data-type='pause'>
-                <svg
-                  width="10"
-                  height="14"
-                  viewBox="0 0 10 14"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M1 1.5L1 12.5"
-                    stroke="black"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                  />
-                  <path
-                    d="M9 1.5L9 12.5"
-                    stroke="black"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                  />
-                </svg>
+                <svg width="10" height="14" viewBox="0 0 10 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M1 1.5L1 12.5" stroke="black" stroke-width="2" stroke-linecap="round"/>
+<path d="M9 1.5L9 12.5" stroke="black" stroke-width="2" stroke-linecap="round"/>
+</svg>
               </div>
-              <span>Pause</span>
+              <span id="pause-text">Pause</span>
             </div>
             <div class="nav_actions" id='stop'>
               <div class="nav_actions-img">
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <g id="heroicons-outline/stop">
-                    <path
-                      id="Rectangle 437"
-                      d="M5.25 7.5C5.25 6.25736 6.25736 5.25 7.5 5.25H16.5C17.7426 5.25 18.75 6.25736 18.75 7.5V16.5C18.75 17.7426 17.7426 18.75 16.5 18.75H7.5C6.25736 18.75 5.25 17.7426 5.25 16.5V7.5Z"
-                      stroke="#0F172A"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </g>
-                </svg>
+               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+<path d="M5.25 7.5C5.25 6.25736 6.25736 5.25 7.5 5.25H16.5C17.7426 5.25 18.75 6.25736 18.75 7.5V16.5C18.75 17.7426 17.7426 18.75 16.5 18.75H7.5C6.25736 18.75 5.25 17.7426 5.25 16.5V7.5Z" stroke="#0F172A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
               </div>
               <span>Stop</span>
             </div>
@@ -305,7 +278,10 @@ const injectNav = () => {
   document.head.insertAdjacentHTML("beforeend", style);
   document.body.insertAdjacentHTML("beforeend", html);
 };
-
+const removeNav = () => {
+  const elementTORemove = document.getElementById("controlls_nav");
+  document.body.removeChild(elementTORemove);
+};
 const startRecorder = async () => {
   let streamId = await navigator.mediaDevices?.getDisplayMedia({
     audio: true,
@@ -321,28 +297,39 @@ const startRecorder = async () => {
     console.log(data);
     const blob = new Blob(data, { type: "video/webm" });
     // window.open(URL.createObjectURL(blob), "_blank");
-    console.log(blob);
+    if (streamId) {
+      const tracks = streamId.getTracks();
+      tracks.forEach(function (track) {
+        track.stop();
+      });
+    }
     recorder = undefined;
 
     data = [];
+    removeNav();
+  });
+  streamId.addEventListener("removetrack", () => {
+    recorder?.stop();
   });
   recorder.start();
   injectNav();
   let element = document.getElementById("controlls_nav");
   const stopBtn = element.querySelector("#stop");
   let pauseBtn = element.querySelector("#pause");
+  let pauseText = element.querySelector("#pause-text");
   stopBtn.addEventListener("click", async () => {
     recorder?.stop();
-    const elementTORemove = document.getElementById("controlls_nav");
-    document.body.removeChild(elementTORemove);
   });
+
   pauseBtn.addEventListener("click", (e) => {
     if (e.target.dataset.type === "pause") {
       recorder?.pause();
       e.target.setAttribute("data-type", "play");
+      pauseText.textContent = "Play";
     } else {
       recorder?.resume();
       e.target.setAttribute("data-type", "pause");
+      pauseText.textContent = "Pause";
     }
   });
 };
