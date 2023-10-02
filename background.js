@@ -6,10 +6,10 @@ async function getCurrentTab() {
 }
 let desktopStreamId;
 let currentTab;
-const injectFunc = ({ tab, isTab, allowCamera, mediaId }) => {
+const injectFunc = ({ tab, isTab, allowCamera, mediaId, allowmic }) => {
   let myrecorder;
   let data = [];
-  console.log("injected");
+  console.log("injected", mediaId);
   const injectNav = () => {
     const style = `
    <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -217,7 +217,9 @@ const injectFunc = ({ tab, isTab, allowCamera, mediaId }) => {
             </div>
             <div class="nav_actions">
               <div class="nav_actions-img" id="micEl">
-                <svg
+               ${
+                 allowmic
+                   ? ` <svg
                   width="24"
                   height="24"
                   viewBox="0 0 24 24"
@@ -234,7 +236,17 @@ const injectFunc = ({ tab, isTab, allowCamera, mediaId }) => {
                       stroke-linejoin="round"
                     />
                   </g>
-                </svg>
+                </svg>`
+                   : `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+<path d="M16 6.3V6C16 3.79 14.21 2 12 2C9.79 2 8 3.79 8 6V11" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M9.04004 14.19C9.77004 15 10.83 15.5 12 15.5C14.21 15.5 16 13.71 16 11.5V11" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M6.77979 16.95C8.14979 18.22 9.97978 19 11.9998 19C16.2198 19 19.6498 15.57 19.6498 11.35V9.64999" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M4.3501 9.64999V11.35C4.3501 12.41 4.5601 13.41 4.9501 14.33" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M20.0702 2.84L3.93018 18.99" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M11 3V6" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M12 19V22" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>`
+               }
 
                 <div class="nav_arrow-up">
                   <svg
@@ -333,26 +345,49 @@ const injectFunc = ({ tab, isTab, allowCamera, mediaId }) => {
       ...audioId.getTracks(),
       ...videoId.getTracks(),
     ]);
-    myrecorder = new MediaRecorder(streamId);
+    if (!allowmic) {
+      const audio = audioId.getAudioTracks()[0];
+      audio.enabled = false;
+    }
+    myrecorder = new MediaRecorder(streamId, {
+      mimeType: "video/webm;codecs=vp9.0",
+    });
     myrecorder.addEventListener("dataavailable", async (e) => {
       data.push(e.data);
     });
 
-    myrecorder.addEventListener("stop", (e) => {
+    myrecorder.addEventListener("stop", async (e) => {
       const blob = new Blob(data, {
-        type: "video/x-matroska;codecs=avc1,opus",
+        type: "video/webm;codecs=vp9.0",
       });
-      window.open(URL.createObjectURL(blob), "_blank");
-      if (streamId) {
-        const tracks = streamId.getTracks();
-        tracks.forEach(function (track) {
-          track.stop();
-        });
-      }
-      myrecorder = undefined;
+      const formData = new FormData();
+      formData.append("video", blob);
+      try {
+        removeNav();
+        if (streamId) {
+          const tracks = streamId.getTracks();
+          tracks.forEach(function (track) {
+            track.stop();
+          });
+        }
+        console.log("Fetching");
+        // const res = await fetch(
+        //   "https://kahuna-chrome-extension.onrender.com/api/upload",
+        //   {
+        //     method: "POST",
+        //     body: formData,
+        //   }
+        // );
+        // const data = await res.json();
+        // console.log(data);
+        window.open(URL.createObjectURL(blob), "_blank");
 
-      data = [];
-      removeNav();
+        myrecorder = undefined;
+
+        data = [];
+      } catch (error) {
+        console.log(error);
+      }
     });
     streamId.addEventListener("removetrack", () => {
       console.log("removing");
@@ -426,9 +461,6 @@ const injectFunc = ({ tab, isTab, allowCamera, mediaId }) => {
   startRecorder();
 };
 const startRecording = async ({ tab, mesaage }) => {
-  const mediaId = await chrome.tabCapture.getMediaStreamId({
-    targetTabId: tab.id,
-  });
   await chrome.scripting.executeScript({
     target: { tabId: tab.id },
     func: injectFunc,
@@ -437,7 +469,8 @@ const startRecording = async ({ tab, mesaage }) => {
         tab,
         isTab: mesaage.isTab,
         allowCamera: mesaage.cameraIsAllowed,
-        mediaId,
+        mediaId: mesaage.mediaId,
+        allowmic: mesaage.microphoneIsAllowed,
       },
     ],
   });
@@ -453,14 +486,3 @@ chrome.runtime.onMessage.addListener(async (mesaage, sender, sendRespons) => {
     }
   }
 });
-// chrome.runtime.onInstalled.addListener(async () => {
-//   for (const cs of chrome.runtime.getManifest().content_scripts) {
-//     for (const tab of await chrome.tabs.query({ url: cs.matches })) {
-//       console.log(cs);
-//       chrome.scripting.executeScript({
-//         target: { tabId: tab.id },
-//         files: cs.js,
-//       });
-//     }
-//   }
-// });

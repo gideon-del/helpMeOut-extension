@@ -50,11 +50,24 @@ monitorEl.addEventListener("click", (e) => {
 
 startBtn.onclick = async (e) => {
   isRecording = true;
+  const [tab] = await chrome.tabs.query({
+    active: true,
+    currentWindow: true,
+  });
+  let mediaId;
+  if (isTab) {
+    mediaId = await chrome.tabCapture.getMediaStreamId({
+      targetTabId: tab.id,
+      consumerTabId: tab.id,
+    });
+  }
+  console.log(mediaId);
   chrome.runtime.sendMessage({
     type: "start",
     isTab,
     cameraIsAllowed,
     microphoneIsAllowed,
+    mediaId: mediaId || null,
   });
   // let currentTab;
   // await chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
